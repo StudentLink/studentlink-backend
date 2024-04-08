@@ -1,0 +1,70 @@
+name: Check all requirements and validate repository
+
+on:
+   push:
+      branches:
+#         - main  // disabled until machine is available
+         - preprod
+
+env:
+   SSH_HOST: ${{ github.ref_name == 'main' && secrets.SSH_HOST_PROD || secrets.SSH_HOST_PREPROD }}
+   SSH_USERNAME: ${{ github.ref_name == 'main' && secrets.SSH_USERNAME_PROD || secrets.SSH_USERNAME_PREPROD }}
+   SSH_KEY: ${{ github.ref_name == 'main' && secrets.SSH_KEY_PROD || secrets.SSH_KEY_PREPROD }}
+   REMOTE_DIR: ${{ github.ref_name == 'main' && secrets.REMOTE_DIR_PROD || secrets.REMOTE_DIR_PREPROD }}
+
+jobs:
+   check-requirements:
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v2
+
+         - name: Setup PHP
+           uses: shivammathur/setup-php@v2
+           with:
+              php-version: '8.1.20'
+              extensions: intl, pdo_mysql, apcu, opcache, gd, curl, openssl, mbstring, soap, xml, iconv, dom, filter
+              coverage: pcov
+              tools: composer:v2
+              ini-values: zend.assertions=1 memory_limit=256M
+           env:
+              update: true
+         - name: Validate repository
+           run: composer validate
+
+   build:
+      needs: check-requirements
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v2
+
+         - name: Setup PHP
+           uses: shivammathur/setup-php@v2
+           with:
+             php-version: '8.1.20'
+             extensions: intl, pdo_mysql, apcu, opcache, gd, curl, openssl, mbstring, soap, xml, iconv, dom, filter
+             coverage: pcov
+             tools: composer:v2
+             ini-values: zend.assertions=1 memory_limit=256M
+
+         - name: Install dependencies
+           run: composer install --no-dev --optimize-autoloader
+
+   deploy:
+      needs: build
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: Launch deployment
+           uses: appleboy/ssh-action@v1.0.3
+           with:
+              host: ${{ env.SSH_HOST }}
+              username: ${{ env.SSH_USERNAME }}
+              key: ${{ env.SSH_KEY }}
+              script: |
+                 cd ${{ env.REMOTE_DIR }}
+                 sudo -u www-data git pull
+                 APP_ENV=prod APP_DEBUG=0 ./github/deploy.sh
