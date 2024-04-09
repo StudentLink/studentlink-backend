@@ -32,3 +32,7 @@
 ###> DOCKER ###
 data/
 ###< DOCKER ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
