@@ -1,13 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Student Link - Réseau social étudiant !{% endblock %}
+
+{% block header %}
+    <section id="heroHome">
+        <div class="heroHome-container">
+            <h1>Une appli,<br/>tous vos amis.</h1>
+            <p>Découvrez StudentLink, le réseau social étudiant !</p>
+            <a href="https://app.studentlink.fr" class="btn">Se connecter</a>
+        </div>
+        <img class="globe" src="{{ asset('img/globe.png') }}" alt="globe">
+    </section>
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
 <div class="example-wrapper">
     <h1>Hello {{ controller_name }}! ✅</h1>
 

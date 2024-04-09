@@ -1,0 +1,27 @@
+#heroHome {
+    background-color: var(--bgDark);
+    min-height: 100vh;
+    overflow: hidden;
+    color: white;
+
+    .heroHome-container {
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        transform: translateY(-50%);
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+    }
+
+    .globe {
+        height: 100vh;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: translateX(40%);
+    }
+}
