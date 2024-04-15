@@ -13,5 +13,6 @@ h1, h2, h3, h4, h5, h6, p, a, label, input, button {
 }
 
 @import '01_variables/colors.scss';
-@import '02_components/buttons';
-@import '03_blocks/heroHome';
+@import '02_layout/header';
+@import '03_components/buttons';
+@import '04_blocks/heroHome';

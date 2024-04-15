@@ -9,8 +9,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'vitrine_home')]
-    public function index(): Response
+    public function index(UserRepository $userRepository): Response
     {
+
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);

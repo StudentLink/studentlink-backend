@@ -22,8 +22,25 @@
 
     </head>
     <body>
-        {% block header %}{% endblock %}
-        {% block body %}{% endblock %}
+        <header>
+            <a href="{{ path('vitrine_home') }}">
+                <img src="{{ asset('img/logo.png') }}" alt="StudentLink - Logo"/>
+            </a>
+            <nav>
+                <a href="{{ path('vitrine_home') }}">Accueil</a>
+                <a href="/">StudentLink : késako ?</a>
+                <a href="/">Webapp</a>
+            </nav>
+
+        </header>
+        <main>
+            {% block hero %}{% endblock %}
+            {% block body %}{% endblock %}
+        </main>
+        <footer>
+
+        </footer>
+
         {% block javascripts %}
             {{ importmap('app') }}
         {% endblock %}

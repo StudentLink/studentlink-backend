@@ -1,0 +1,37 @@
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100vw - 10%);
+  padding: 0 5%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  user-select: none;
+
+  img {
+    height: 70px;
+    margin: 15px 0;
+  }
+
+  nav {
+    background: var(--blue);
+    padding: 17px 20px;
+    margin: 0 10px;
+    border-radius: 50px;
+    margin-left: auto;
+
+    a {
+      color: var(--bgDark);
+      padding: 7px 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      border-radius: 50px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+}
