@@ -12,5 +12,6 @@ h1, h2, h3, h4, h5, h6, p, a, label, input, button {
     list-style: none;
 }
 
-@import 'blocks/heroHome';
-@import 'variables/colors.scss'
+@import '01_variables/colors.scss';
+@import '02_components/buttons';
+@import '03_blocks/heroHome';
