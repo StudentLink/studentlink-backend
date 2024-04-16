@@ -107,7 +107,7 @@ php bin/console sass:build --watch
 
 Vous pouvez désormais accéder au projet via l'adresse `http://localhost:8741`.
 
-III. Utilisation
+## III. Utilisation
 
 ### 1. Vitrine
 
