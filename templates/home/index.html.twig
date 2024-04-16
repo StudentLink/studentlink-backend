@@ -5,22 +5,14 @@
 {% block hero %}
     <section id="heroHome">
         <div class="heroHome-container">
-            <h1>Une appli,<br/>tous vos amis.</h1>
-            <p>Découvrez StudentLink, le réseau social étudiant !</p>
-            <a href="https://app.studentlink.fr/" class="btn">Ouvrir la webapp</a>
+            <h1>Une appli,<br/>tous tes amis.</h1>
+            <p>Découvre StudentLink, le réseau social étudiant !<br/>
+            Rejoins {% if userCount is defined %}{% if userCount > 1 %}nos {{ userCount }}{% else %}notre premier{% endif %} utilisateur{% if userCount > 1 %}s{% endif %}{% else %} tous nos utilisateurs{% endif %} dès maintenant !</p>
+            <a href="https://app.studentlink.fr/" class="btn">Ouvrir StudentLink</a>
         </div>
         <img class="globe" src="{{ asset('img/globe.png') }}" alt="globe">
     </section>
 {% endblock %}
 
 {% block body %}
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Maxime/Documents/1-Clients/Cenergia/Dev/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/Maxime/Documents/1-Clients/Cenergia/Dev/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
 {% endblock %}

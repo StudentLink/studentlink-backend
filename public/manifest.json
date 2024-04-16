@@ -1,10 +1,10 @@
 {
-  "short_name": "Cenergia",
-  "name": "Cenergia WebApp",
+  "short_name": "StudentLink",
+  "name": "StudentLink vitrine & API",
 
   "icons": [
     {
-      "src": "ice.png",
+      "src": "icon.png",
       "type": "image/png",
       "sizes": "192x192"
     }

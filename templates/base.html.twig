@@ -28,8 +28,11 @@
             </a>
             <nav>
                 <a href="{{ path('vitrine_home') }}">Accueil</a>
-                <a href="/">StudentLink : késako ?</a>
-                <a href="/">Webapp</a>
+                <a href="/">Découvrir</a>
+                <a href="">Assistance</a>
+            </nav>
+            <nav class="importantNav">
+                <a href="/">Ouvrir StudentLink</a>
             </nav>
 
         </header>
@@ -38,7 +41,34 @@
             {% block body %}{% endblock %}
         </main>
         <footer>
-
+            {% block footer %}
+                <div class="footerLinks">
+                    <div class="leftMedias">
+                        <img src="{{ asset('img/logo.png') }}" alt="StudentLink - Logo"/>
+                        <h2>StudentLink</h2>
+                    </div>
+                    <div class="rightLinks">
+                        <div>
+                            <h3>Étudiants</h3>
+                            <a href="/">Accueil</a>
+                            <a href="/">Découvrir</a>
+                            <a href="/">Assistance</a>
+                        </div>
+                        <div>
+                            <h3>Entreprises</h3>
+                            <a href="/">Accueil</a>
+                            <a href="/">Découvrir</a>
+                            <a href="/">Assistance</a>
+                        </div>
+                        <div>
+                            <h3>Écoles</h3>
+                            <a href="/">Accueil</a>
+                            <a href="/">Découvrir</a>
+                            <a href="/">Assistance</a>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
         </footer>
 
         {% block javascripts %}
