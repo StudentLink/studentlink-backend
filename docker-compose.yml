@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+  database:
+    image: mysql:8.3
+    container_name: database
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: studentlink
+      MYSQL_USER: studentlinkuser
+      MYSQL_PASSWORD: studentlinkpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - studentlink
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    links:
+      - database
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - studentlink
+
+  # Symfony apache project container
+  www:
+    build: docker/php
+    container_name: project
+    ports:
+      - "8741:80"
+    volumes:
+      - ./docker/php/vhosts:/etc/apache2/sites-enabled
+      - ./:/var/www
+    restart: always
+    networks:
+      - studentlink
+
+networks:
+  studentlink:
+
+volumes:
+  db-data:
