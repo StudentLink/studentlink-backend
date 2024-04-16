@@ -10,21 +10,29 @@
 
 ## Sommaire
 
-- [Présentation](#présentation)
-- [Installation](#installation)
-- [Utilisation](#utilisation)
-- [Contribuer](#contribuer)
-- [Licence](#licence)
-- [Contact](#contact)
+- [I. Présentation](#i-présentation)
+- [II. Installation](#ii-installation)
+    - [1. Prérequis](#1-prérequis)
+    - [2. Cloner le projet](#2-cloner-le-projet)
+    - [3. Variables d'environnement](#3-variables-denvironnement)
+    - [4. Lancement du Docker](#4-lancement-du-docker)
+    - [5. Installation des dépendances](#5-installation-des-dépendances)
+    - [6. Création de la base de données](#6-création-de-la-base-de-données)
+    - [7. Build des assets](#7-build-des-assets)
+    - [8. Accès au projet](#8-accès-au-projet)
+- [III. Utilisation](#iii-utilisation)
+    - [1. Vitrine](#1-vitrine)
+    - [2. API](#2-api)
 
-## Présentation
+
+## I. Présentation
 
 Cet outil est entièrement développé en Symfony, et se compose de deux parties :
 
 - Le site vitrine du projet
 - L'API de l'application
 
-## Installation
+## II. Installation
 
 ### 1. Prérequis
 
@@ -98,3 +106,34 @@ php bin/console sass:build --watch
 ### 8. Accès au projet
 
 Vous pouvez désormais accéder au projet via l'adresse `http://localhost:8741`.
+
+III. Utilisation
+
+### 1. Vitrine
+
+Le site vitrine est accessible à la racine du site web. Différentes routes vitrines sont disponibles.
+
+### 2. API
+
+L'API est accessible via la route `/api`. Différentes routes sont disponibles pour accéder aux différentes ressources.
+
+**Connexion :** `POST /api/login` -> Retourne un token JWT
+
+```json
+{
+    "email": "example@example.com",
+    "password": "password"
+}
+```
+
+**Inscription :** `POST /api/register` -> Crée un utilisateur et retourne un token JWT
+
+```json
+{
+    "role": "ROLE_EXAMPLE",
+    "displayname": "User EXAMPLE",
+    "username": "username",
+    "email": "example@example.com", 
+    "password": "password",
+}
+```
