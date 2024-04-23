@@ -34,7 +34,7 @@ services:
     build: docker/php
     container_name: project
     ports:
-      - "8741:80"
+      - "80:80"
     volumes:
       - ./docker/php/vhosts:/etc/apache2/sites-enabled
       - ./:/var/www
