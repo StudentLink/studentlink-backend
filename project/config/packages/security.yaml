@@ -47,7 +47,7 @@ security:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, methods: [POST], roles: PUBLIC_ACCESS}
         - { path: ^/api/users, methods: [GET, PUT, DELETE], roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/schools, methods: [GET], roles: PUBLIC_ACCESS
+        - { path: ^/api/schools, methods: [GET], roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
