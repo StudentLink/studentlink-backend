@@ -103,37 +103,91 @@ class ApiController extends AbstractController
         ], 405);
     }
 
-    #[Route('/users/me', name: '_user_me', methods: ['GET'])]
-    public function userMe(UserRepository $userRepository): Response
+    #[Route('/users/me', name: '_user_me', methods: ['GET', 'PUT', 'DELETE'])]
+    public function userMe(Request $request, UserRepository $userRepository): Response
     {
         $decodedJwtToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+        $id = $decodedJwtToken['sub'];
 
-        $user = $userRepository->findOneBy(['id' => $decodedJwtToken['sub']]);
-        if ($user == null) {
-            return $this->json([
-                'message' => 'User not found.',
-            ], 404);
+        if ($request->getMethod() == 'GET') {
+            $user = $userRepository->findOneBy(['id' => $id]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+
+            return $this->json(
+                $user,
+            );
         }
 
-        return $this->json(
-            $user,
-        );
+        if ($request->getMethod() == 'PUT') {
+            return $this->json([
+                "messsage" => "Not implemented yet."
+            ]);
+        }
+
+        if ($request->getMethod() == 'DELETE') {
+            $user = $userRepository->findOneBy(['id' => $id]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+
+            $this->entityManager->remove($user);
+            $this->entityManager->flush();
+            return $this->json([
+                'message' => 'User deleted.',
+            ]);
+        }
+
+        return $this->json([
+            'message' => 'Method not allowed.',
+        ], 405);
     }
 
     #[Route('/users/{id}', name: '_users_id', methods: ['GET', 'PUT', 'DELETE'])]
-    public function user_id(UserRepository $userRepository, int $id): Response
+    public function user_id(Request $request, UserRepository $userRepository, int $id): Response
     {
+        if ($request->getMethod() == 'GET') {
+            $user = $userRepository->findOneBy(['id' => $id]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
 
-        $user = $userRepository->findOneBy(['id' => $id]);
-        if ($user == null) {
-            return $this->json([
-                'message' => 'User not found.',
-            ], 404);
+            return $this->json(
+                $user,
+            );
         }
 
-        return $this->json(
-            $user,
-        );
+        if ($request->getMethod() == 'PUT') {
+            return $this->json([
+                "messsage" => "Not implemented yet."
+            ]);
+        }
+
+        if ($request->getMethod() == 'DELETE') {
+            $user = $userRepository->findOneBy(['id' => $id]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+
+            $this->entityManager->remove($user);
+            $this->entityManager->flush();
+            return $this->json([
+                'message' => 'User deleted.',
+            ]);
+        }
+
+        return $this->json([
+            'message' => 'Method not allowed.',
+        ], 405);
     }
 
 
