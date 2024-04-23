@@ -23,11 +23,11 @@
     </head>
     <body>
         <header>
-            <a href="{{ path('vitrine_home') }}">
+            <a href="{{ path('vitrine_users_home') }}">
                 <img src="{{ asset('img/logo.png') }}" alt="StudentLink - Logo"/>
             </a>
             <nav>
-                <a href="{{ path('vitrine_home') }}">Accueil</a>
+                <a href="{{ path('vitrine_users_home') }}">Accueil</a>
                 <a href="/">Découvrir</a>
                 <a href="">Assistance</a>
             </nav>
@@ -50,19 +50,19 @@
                     <div class="rightLinks">
                         <div>
                             <h3>Étudiants</h3>
-                            <a href="/">Accueil</a>
+                            <a href="{{ path('vitrine_users_home') }}">Accueil</a>
                             <a href="/">Découvrir</a>
                             <a href="/">Assistance</a>
                         </div>
                         <div>
                             <h3>Entreprises</h3>
-                            <a href="/">Accueil</a>
+                            <a href="{{ path('vitrine_partners_home') }}">Accueil</a>
                             <a href="/">Découvrir</a>
                             <a href="/">Assistance</a>
                         </div>
                         <div>
                             <h3>Écoles</h3>
-                            <a href="/">Accueil</a>
+                            <a href="{{ path('vitrine_schools_home') }}">Accueil</a>
                             <a href="/">Découvrir</a>
                             <a href="/">Assistance</a>
                         </div>
