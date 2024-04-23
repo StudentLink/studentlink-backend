@@ -45,13 +45,7 @@ class ApiController extends AbstractController
         }
 
         if ($request->getMethod() == 'POST') {
-            $data = array(
-                "role" => $request->get('role'),
-                "email" => $request->get('email'),
-                "displayname" => $request->get('displayname'),
-                "username" => $request->get('username'),
-                "password" => $request->get('password')
-            );
+            $data = json_decode($request->getContent(), true);
 
             if (empty($data)) {
                 return $this->json([
@@ -153,9 +147,7 @@ class ApiController extends AbstractController
         }
 
         if ($request->getMethod() == 'POST') {
-            $data = array(
-                "name" => strtoupper($request->get('name')),
-            );
+            $data = json_decode($request->getContent(), true);
 
             if (empty($data)) {
                 return $this->json([
@@ -217,9 +209,7 @@ class ApiController extends AbstractController
                 ], 404);
             }
 
-            $data = array(
-                "name" => strtoupper($request->get('name')),
-            );
+            $data = json_decode($request->getContent(), true);
 
             if (empty($data)) {
                 return $this->json([
