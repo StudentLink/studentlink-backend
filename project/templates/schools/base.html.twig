@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Student Link - Réseau social étudiant !{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+    <!-- PWA -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.scss') }}">
+    {% endblock %}
+
+</head>
+<body>
+<header>
+    <a href="{{ path('vitrine_schools_home') }}">
+        <img src="{{ asset('img/logo-schools.png') }}" alt="StudentLink - Logo"/>
+    </a>
+    <nav>
+        <a href="{{ path('vitrine_schools_home') }}">Accueil</a>
+        <a href="/">Découvrir</a>
+        <a href="">Assistance</a>
+    </nav>
+    <nav class="importantNav">
+        <a href="/">Ouvrir StudentLink</a>
+    </nav>
+
+</header>
+<main>
+    {% block hero %}{% endblock %}
+    {% block body %}{% endblock %}
+</main>
+<footer>
+    {% block footer %}
+        <div class="footerLinks">
+            <div class="leftMedias">
+                <img src="{{ asset('img/logo.png') }}" alt="StudentLink - Logo"/>
+                <h2>StudentLink</h2>
+            </div>
+            <div class="rightLinks">
+                <div>
+                    <h3>Étudiants</h3>
+                    <a href="{{ path('vitrine_users_home') }}">Accueil</a>
+                    <a href="/">Découvrir</a>
+                    <a href="/">Assistance</a>
+                </div>
+                <div>
+                    <h3>Entreprises</h3>
+                    <a href="{{ path('vitrine_partners_home') }}">Accueil</a>
+                    <a href="/">Découvrir</a>
+                    <a href="/">Assistance</a>
+                </div>
+                <div>
+                    <h3>Écoles</h3>
+                    <a href="{{ path('vitrine_schools_home') }}">Accueil</a>
+                    <a href="/">Découvrir</a>
+                    <a href="/">Assistance</a>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+</footer>
+
+{% block javascripts %}
+    {{ importmap('app') }}
+{% endblock %}
+</body>
+</html>
