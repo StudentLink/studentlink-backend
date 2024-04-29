@@ -50,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user'])]
     private ?string $picture = null;
 
-    #[ORM\Column(type: Types::ARRAY, options: ['default' => '[]'])]
+    #[ORM\Column(type: Types::ARRAY)]
 
     #[Groups(['user'])]
     private array $locations = [];
