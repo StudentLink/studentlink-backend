@@ -86,6 +86,7 @@ class ApiUserController extends AbstractController
             }
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['password']));
             $user->setLocations([]);
+            $user->setCreatedAt(new \DateTimeImmutable('now'));
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();

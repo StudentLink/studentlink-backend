@@ -33,6 +33,7 @@ class UserFixtures extends Fixture
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
         $user->setLocations(["Bordeaux", "Paris"]);
         $user->setSchool($ynovBordeaux);
+        $user->setCreatedAt(new \DateTimeImmutable('now'));
         $manager->persist($user);
 
         // Création d'un user "école"
@@ -42,8 +43,9 @@ class UserFixtures extends Fixture
         $userSchool->setUsername("ynov");
         $userSchool->setRoles(["ROLE_SCHOOL"]);
         $userSchool->setPassword($this->userPasswordHasher->hashPassword($userSchool, "password"));
-        $user->setLocations(["Bordeaux"]);
-        $user->setSchool($ynovBordeaux);
+        $userSchool->setLocations(["Bordeaux"]);
+        $userSchool->setSchool($ynovBordeaux);
+        $userSchool->setCreatedAt(new \DateTimeImmutable('now'));
         $manager->persist($userSchool);
 
         // Création d'un user "partenaire"
@@ -53,7 +55,8 @@ class UserFixtures extends Fixture
         $userPartner->setUsername("baolehaillan");
         $userPartner->setRoles(["ROLE_PARTNER"]);
         $userPartner->setPassword($this->userPasswordHasher->hashPassword($userPartner, "password"));
-        $user->setLocations(["Le Haillan"]);
+        $userPartner->setLocations(["Le Haillan"]);
+        $userPartner->setCreatedAt(new \DateTimeImmutable('now'));
         $manager->persist($userPartner);
         
         // Création d'un user admin
@@ -63,7 +66,8 @@ class UserFixtures extends Fixture
         $userAdmin->setUsername("useradmin");
         $userAdmin->setRoles(["ROLE_ADMIN"]);
         $userAdmin->setPassword($this->userPasswordHasher->hashPassword($userAdmin, "password"));
-        $user->setLocations(["Bordeaux"]);
+        $userAdmin->setLocations(["Bordeaux"]);
+        $userAdmin->setCreatedAt(new \DateTimeImmutable('now'));
         $manager->persist($userAdmin);
 
         $manager->flush();
