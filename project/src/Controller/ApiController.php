@@ -136,9 +136,87 @@ class ApiController extends AbstractController
         }
 
         if ($request->getMethod() == 'PUT') {
-            return $this->json([
-                "messsage" => "Not implemented yet."
-            ]);
+
+            $data = json_decode($request->getContent(), true);
+
+            if (empty($data)) {
+                return $this->json([
+                    'message' => 'No data provided.',
+                ], 400);
+            }
+
+            if (isset($data['email']) && $data['email'] != null) {
+                if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                    return $this->json([
+                        'message' => 'Email is invalid.',
+                    ], 400);
+                }
+                if ($userRepository->findOneBy(['email' => $data['email']])) {
+                    return $this->json([
+                        'message' => 'Email already used.',
+                    ], 400);
+                }
+                $user->setEmail($data['email']);
+            }
+
+            if (isset($data['displayname']) && $data['displayname'] != null) {
+                $user->setName($data['displayname']);
+            }
+
+            if (isset($data['username']) && $data['username'] != null) {
+                if ($userRepository->findOneBy(['username' => $data['username']])) {
+                    return $this->json([
+                        'message' => 'Username already used.',
+                    ], 400);
+                }
+                $user->setUsername($data['username']);
+            }
+
+            if (isset($data['role']) && $data['role'] != null) {
+                if (!in_array($data['role'], ['ROLE_USER', 'ROLE_SCHOOL', 'ROLE_PARTNER', 'ROLE_ADMIN'])) {
+                    return $this->json([
+                        'message' => 'Role is invalid.',
+                    ], 400);
+                }
+                $user->setRoles([$data['role']]);
+            }
+
+            if (isset($data['password']) && $data['password'] != null) {
+                if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^',$data['password'])) {
+                    return $this->json([
+                        'message' => 'Password does not respect the Security Policy.',
+                    ], 400);
+                }
+                $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['password']));
+            }
+
+            if (isset($data['picture']) && $data['picture'] != null) {
+                $user->setPicture($data['picture']);
+            }
+
+            if (isset($data['locations']) && $data['locations'] != null) {
+                $user->setLocations($data['locations']);
+            }
+
+            if (isset($data['school']) && $data['school'] != null) {
+                $school = $this->entityManager->getRepository(School::class)->findOneBy(['id' => $data['school']]);
+                if ($school == null) {
+                    return $this->json([
+                        'message' => 'School not found.',
+                    ], 404);
+                }
+                $user->setSchool($school);
+            }
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            return $this->json(
+                $user,
+                200,
+                [],
+                ['groups' => 'user']
+            );
         }
 
         if ($request->getMethod() == 'DELETE') {
