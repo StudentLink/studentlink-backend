@@ -17,22 +17,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\UserRepository;
 
 #[Route('/api', name: 'api')]
-class ApiController extends AbstractController
+class ApiUserController extends AbstractController
 {
-    private UserPasswordHasherInterface $userPasswordHasher;
-    private $entityManager;
-
-    private JWTTokenManagerInterface $jwtManager;
-    private TokenStorageInterface $tokenStorageInterface;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface)
     {
-        $this->userPasswordHasher = $userPasswordHasher;
         $this->entityManager = $entityManager;
-
-        // For using JWT Tokens in controllers
-        $this->jwtManager = $jwtManager;
-        $this->tokenStorageInterface = $tokenStorageInterface;
     }
 
     #[Route('/users', name: '_users', methods: ['GET', 'POST'])]
@@ -64,7 +55,7 @@ class ApiController extends AbstractController
 
             // Création d'un user
             $user = new User();
-            if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 return $this->json([
                     'message' => 'Email is invalid.',
                 ], 400);
@@ -88,12 +79,13 @@ class ApiController extends AbstractController
                 ], 400);
             }
             $user->setRoles([$data['role']]);
-            if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^',$data['password'])) {
+            if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^', $data['password'])) {
                 return $this->json([
                     'message' => 'Password does not respect the Security Policy.',
                 ], 400);
             }
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['password']));
+            $user->setLocations([]);
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -146,7 +138,7 @@ class ApiController extends AbstractController
             }
 
             if (isset($data['email']) && $data['email'] != null) {
-                if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                     return $this->json([
                         'message' => 'Email is invalid.',
                     ], 400);
@@ -182,7 +174,7 @@ class ApiController extends AbstractController
             }
 
             if (isset($data['password']) && $data['password'] != null) {
-                if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^',$data['password'])) {
+                if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^', $data['password'])) {
                     return $this->json([
                         'message' => 'Password does not respect the Security Policy.',
                     ], 400);
@@ -224,138 +216,6 @@ class ApiController extends AbstractController
             $this->entityManager->flush();
             return $this->json([
                 'message' => 'User deleted.',
-            ]);
-        }
-
-        return $this->json([
-            'message' => 'Method not allowed.',
-        ], 405);
-    }
-
-
-    #[Route('/schools', name: '_schools', methods: ['GET', 'POST'])]
-    public function schools(Request $request, SchoolRepository $schoolRepository): Response
-    {
-        if ($request->getMethod() == 'GET') {
-            return $this->json(
-                $schoolRepository->findAll(),
-                200,
-                [],
-                ['groups' => 'school']
-            );
-        }
-
-        if ($request->getMethod() == 'POST') {
-            $data = json_decode($request->getContent(), true);
-
-            if (empty($data)) {
-                return $this->json([
-                    'message' => 'No data provided.',
-                ], 400);
-            }
-
-            if ($data['name'] == null) {
-                return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
-                ], 400);
-            }
-
-            if ($schoolRepository->findOneBy(['name' => $data['name']])) {
-                return $this->json([
-                    'message' => 'School already exists.',
-                ], 400);
-            }
-
-            $school = new School();
-            $school->setName($data['name']);
-
-            $this->entityManager->persist($school);
-            $this->entityManager->flush();
-
-            return $this->json(
-                $school,
-                200,
-                [],
-                ['groups' => 'school']
-            );
-        }
-
-        return $this->json([
-            'message' => 'Method not allowed.',
-        ], 405);
-    }
-
-    #[Route('/schools/{id}', name: '_schools_id', methods: ['GET', 'PUT', 'DELETE'])]
-    public function schools_id(Request $request, SchoolRepository $schoolRepository, int $id): Response
-    {
-        if ($request->getMethod() == 'GET') {
-
-            $school = $schoolRepository->findOneBy(['id' => $id]);
-            if ($school == null) {
-                return $this->json([
-                    'message' => 'School not found.',
-                ], 404);
-            }
-
-            return $this->json(
-                $school,
-                200,
-                [],
-                ['groups' => 'school']
-            );
-        }
-
-        if ($request->getMethod() == 'PUT') {
-
-            $school = $schoolRepository->findOneBy(['id' => $id]);
-            if ($school == null) {
-                return $this->json([
-                    'message' => 'School not found.',
-                ], 404);
-            }
-
-            $data = json_decode($request->getContent(), true);
-
-            if (empty($data)) {
-                return $this->json([
-                    'message' => 'No data provided.',
-                ], 400);
-            }
-
-            if ($data['name'] == null) {
-                return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
-                ], 400);
-            }
-
-            if ($schoolRepository->findOneBy(['name' => $data['name']])) {
-                return $this->json([
-                    'message' => 'School already exists.',
-                ], 400);
-            }
-
-            $school->setName($data['name']);
-
-            $this->entityManager->persist($school);
-            $this->entityManager->flush();
-
-            return $this->json(
-                $school
-            );
-        }
-
-        if ($request->getMethod() == 'DELETE') {
-            $school = $schoolRepository->findOneBy(['id' => $id]);
-            if ($school == null) {
-                return $this->json([
-                    'message' => 'School not found.',
-                ], 404);
-            }
-
-            $this->entityManager->remove($school);
-            $this->entityManager->flush();
-            return $this->json([
-                'message' => 'School deleted.',
             ]);
         }
 
