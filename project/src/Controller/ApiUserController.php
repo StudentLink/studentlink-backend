@@ -223,4 +223,32 @@ class ApiUserController extends AbstractController
             'message' => 'Method not allowed.',
         ], 405);
     }
+
+    #[Route('/users/{idOrUsername}/posts', name: '_users_id_posts', methods: ['GET'])]
+    public function schools_id_posts(Request $request, UserRepository $userRepository, string $idOrUsername): Response {
+
+        if (is_numeric($idOrUsername)) {
+            $id = intval($idOrUsername);
+            $user = $userRepository->findOneBy(['id' => $id]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+        } else {
+            $user = $userRepository->findOneBy(['username' => $idOrUsername]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+        }
+
+        return $this->json(
+            $user->getPosts(),
+            200,
+            [],
+            ['groups' => 'post']
+        );
+    }
 }

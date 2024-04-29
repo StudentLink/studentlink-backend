@@ -57,6 +57,14 @@ class ApiPostsController extends AbstractController
                 ], 400);
             }
 
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $data['user']]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+
             $post = new Post();
             $post->setContent($data['content']);
             if (isset($data['school']) && $data['school'] != null) {
@@ -68,16 +76,15 @@ class ApiPostsController extends AbstractController
                     ], 404);
                 }
                 $post->setSchool($school);
+
+                if ($user->getSchool() !== $school) {
+                    return $this->json([
+                        'message' => 'User and post schools do not match.',
+                    ], 400);
+                }
             }
             if (isset($data['locations']) && $data['locations'] != null) {
                 $post->setLocations($data['locations']);
-            }
-            $userRepository = $this->entityManager->getRepository(User::class);
-            $user = $userRepository->findOneBy(['id' => $data['user']]);
-            if ($user == null) {
-                return $this->json([
-                    'message' => 'User not found.',
-                ], 404);
             }
             $post->setUser($user);
 
