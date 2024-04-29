@@ -7,6 +7,7 @@ use App\Entity\School;
 use App\Entity\User;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,11 +21,17 @@ class ApiPostsController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
+    private JWTTokenManagerInterface $jwtManager;
+    private TokenStorageInterface $tokenStorageInterface;
+
     public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface)
     {
         $this->entityManager = $entityManager;
-    }
 
+        // For using JWT Tokens in controllers
+        $this->jwtManager = $jwtManager;
+        $this->tokenStorageInterface = $tokenStorageInterface;
+    }
 
     #[Route('/posts', name: '_posts', methods: ['GET', 'POST'])]
     public function posts(Request $request, PostRepository $postRepository): Response
@@ -40,30 +47,35 @@ class ApiPostsController extends AbstractController
 
         if ($request->getMethod() == 'POST') {
             $data = json_decode($request->getContent(), true);
+            $decodedJwtToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedJwtToken['sub']]);
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+
+
             if (empty($data)) {
                 return $this->json([
                     'message' => 'No data provided.',
                 ], 400);
             }
 
-            if (!isset($data['content']) || (!isset($data['school']) && !isset($data['locations'])) || !isset($data['user'])) {
+            if (!isset($data['content']) || (!isset($data['school']) && !isset($data['locations']))) {
                 return $this->json([
                     'message' => 'Some data is missing. Please refer to the documentation.',
                 ], 400);
             }
-            if ($data['content'] == null || ($data['school'] == null && $data['locations'] == null) || $data['user'] == null) {
+            if ($data['content'] == null || ($data['school'] == null && $data['locations'] == null)) {
                 return $this->json([
                     'message' => 'Some data is missing. Please refer to the documentation.',
                 ], 400);
             }
 
-            $userRepository = $this->entityManager->getRepository(User::class);
-            $user = $userRepository->findOneBy(['id' => $data['user']]);
-            if ($user == null) {
-                return $this->json([
-                    'message' => 'User not found.',
-                ], 404);
-            }
+
 
             $post = new Post();
             $post->setContent($data['content']);
