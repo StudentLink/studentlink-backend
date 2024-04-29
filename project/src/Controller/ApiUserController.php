@@ -19,10 +19,12 @@ use App\Repository\UserRepository;
 #[Route('/api', name: 'api')]
 class ApiUserController extends AbstractController
 {
+    private UserPasswordHasherInterface $userPasswordHasher;
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface)
     {
+        $this->userPasswordHasher = $userPasswordHasher;
         $this->entityManager = $entityManager;
     }
 
