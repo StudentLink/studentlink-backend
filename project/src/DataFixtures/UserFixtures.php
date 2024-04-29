@@ -2,8 +2,10 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\School;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -18,6 +20,10 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $ynovBordeaux = new School();
+        $ynovBordeaux->setName('Bordeaux YNOV Campus');
+        $manager->persist($ynovBordeaux);
+
         // Création d'un user "normal"
         $user = new User();
         $user->setEmail("user@studentlink.com");
@@ -25,6 +31,8 @@ class UserFixtures extends Fixture
         $user->setUsername("lukagrc");
         $user->setRoles(["ROLE_USER"]);
         $user->setPassword($this->userPasswordHasher->hashPassword($user, "password"));
+        $user->setLocations(["Bordeaux", "Paris"]);
+        $user->setSchool($ynovBordeaux);
         $manager->persist($user);
 
         // Création d'un user "école"
@@ -34,6 +42,8 @@ class UserFixtures extends Fixture
         $userSchool->setUsername("ynov");
         $userSchool->setRoles(["ROLE_SCHOOL"]);
         $userSchool->setPassword($this->userPasswordHasher->hashPassword($userSchool, "password"));
+        $user->setLocations(["Bordeaux"]);
+        $user->setSchool($ynovBordeaux);
         $manager->persist($userSchool);
 
         // Création d'un user "partenaire"
@@ -43,6 +53,7 @@ class UserFixtures extends Fixture
         $userPartner->setUsername("baolehaillan");
         $userPartner->setRoles(["ROLE_PARTNER"]);
         $userPartner->setPassword($this->userPasswordHasher->hashPassword($userPartner, "password"));
+        $user->setLocations(["Le Haillan"]);
         $manager->persist($userPartner);
         
         // Création d'un user admin
@@ -52,6 +63,7 @@ class UserFixtures extends Fixture
         $userAdmin->setUsername("useradmin");
         $userAdmin->setRoles(["ROLE_ADMIN"]);
         $userAdmin->setPassword($this->userPasswordHasher->hashPassword($userAdmin, "password"));
+        $user->setLocations(["Bordeaux"]);
         $manager->persist($userAdmin);
 
         $manager->flush();

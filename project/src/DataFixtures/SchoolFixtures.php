@@ -11,10 +11,6 @@ class SchoolFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
 
-        $ynovBordeaux = new School();
-        $ynovBordeaux->setName('Bordeaux YNOV Campus');
-        $manager->persist($ynovBordeaux);
-
         $ynovLyon = new School();
         $ynovLyon->setName('Lyon YNOV Campus');
         $manager->persist($ynovLyon);

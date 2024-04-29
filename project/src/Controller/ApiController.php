@@ -41,6 +41,9 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET') {
             return $this->json(
                 $userRepository->findAll(),
+                200,
+                [],
+                ['groups' => 'user']
             );
         }
 
@@ -126,6 +129,9 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET') {
             return $this->json(
                 $user,
+                200,
+                [],
+                ['groups' => 'user']
             );
         }
 
@@ -155,6 +161,9 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET') {
             return $this->json(
                 $schoolRepository->findAll(),
+                200,
+                [],
+                ['groups' => 'school']
             );
         }
 
@@ -186,7 +195,10 @@ class ApiController extends AbstractController
             $this->entityManager->flush();
 
             return $this->json(
-                $school
+                $school,
+                200,
+                [],
+                ['groups' => 'school']
             );
         }
 
@@ -208,7 +220,10 @@ class ApiController extends AbstractController
             }
 
             return $this->json(
-                $school
+                $school,
+                200,
+                [],
+                ['groups' => 'school']
             );
         }
 
