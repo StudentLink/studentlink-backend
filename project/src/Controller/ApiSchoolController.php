@@ -157,4 +157,21 @@ class ApiSchoolController extends AbstractController
             'message' => 'Method not allowed.',
         ], 405);
     }
+
+    #[Route('/schools/{id}/posts', name: '_schools_id_posts', methods: ['GET'])]
+    public function schools_id_posts(Request $request, SchoolRepository $schoolRepository, int $id): Response {
+        $school = $schoolRepository->findOneBy(['id' => $id]);
+        if ($school == null) {
+            return $this->json([
+                'message' => 'School not found.',
+            ], 404);
+        }
+
+        return $this->json(
+            $school->getPosts(),
+            200,
+            [],
+            ['groups' => 'post']
+        );
+    }
 }

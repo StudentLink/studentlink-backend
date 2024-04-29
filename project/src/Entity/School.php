@@ -14,11 +14,11 @@ class School
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user', 'school'])]
+    #[Groups(['user', 'school', 'post'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user', 'school'])]
+    #[Groups(['user', 'school', 'post'])]
     private ?string $name = null;
 
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'school')]
