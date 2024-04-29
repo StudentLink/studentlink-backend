@@ -136,13 +136,6 @@ class ApiController extends AbstractController
         }
 
         if ($request->getMethod() == 'DELETE') {
-            $user = $userRepository->findOneBy(['id' => $id]);
-            if ($user == null) {
-                return $this->json([
-                    'message' => 'User not found.',
-                ], 404);
-            }
-
             $this->entityManager->remove($user);
             $this->entityManager->flush();
             return $this->json([
