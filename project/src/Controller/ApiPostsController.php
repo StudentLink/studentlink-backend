@@ -64,7 +64,7 @@ class ApiPostsController extends AbstractController
                 ], 400);
             }
 
-            if (!isset($data['content']) || (!isset($data['school']) && !isset($data['locations']))) {
+            if (!isset($data['content']) || (!isset($data['school']) && !isset($data['location']))) {
                 return $this->json([
                     'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
@@ -88,8 +88,8 @@ class ApiPostsController extends AbstractController
                     ], 400);
                 }
             }
-            if (isset($data['locations']) && $data['locations'] != null) {
-                $post->setLocations($data['locations']);
+            if (isset($data['location']) && $data['location'] != null) {
+                $post->setLocation($data['location']);
             }
             $post->setUser($user);
             $post->setCreatedAt(new \DateTimeImmutable('now'));
