@@ -44,25 +44,25 @@ class ApiCommentController extends AbstractController
             $user = $userRepository->findOneBy(['id' => $decodedJwtToken['sub']]);
             if ($user == null) {
                 return $this->json([
-                    'message' => 'User not found.',
+                    'message' => 'Utilisateur introuvable.',
                 ], 404);
             }
 
 
             if (empty($data)) {
                 return $this->json([
-                    'message' => 'No data provided.',
+                    'message' => 'Aucune donnée envoyée.',
                 ], 400);
             }
 
             if (!isset($data['content']) || (!isset($data['school']) && !isset($data['locations']))) {
                 return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
+                    'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
             if ($data['content'] == null || ($data['school'] == null && $data['locations'] == null)) {
                 return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
+                    'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
 
@@ -75,14 +75,14 @@ class ApiCommentController extends AbstractController
                 $school = $schoolRepository->findOneBy(['id' => $data['school']]);
                 if ($school == null) {
                     return $this->json([
-                        'message' => 'School not found.',
+                        'message' => 'École introuvable.',
                     ], 404);
                 }
                 $post->setSchool($school);
 
                 if ($user->getSchool() !== $school) {
                     return $this->json([
-                        'message' => 'User and post schools do not match.',
+                        'message' => "L'école donnée n'est pas celle liée à l'utilisateur.",
                     ], 400);
                 }
             }
@@ -103,7 +103,7 @@ class ApiCommentController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'Method not allowed.',
+            'message' => 'Methode non autorisée.',
         ], 405);
     }
 
@@ -115,7 +115,7 @@ class ApiCommentController extends AbstractController
             $post = $postRepository->findOneBy(['id' => $id]);
             if ($post == null) {
                 return $this->json([
-                    'message' => 'Post not found.',
+                    'message' => 'Post introuvable.',
                 ], 404);
             }
 
@@ -131,19 +131,19 @@ class ApiCommentController extends AbstractController
             $post = $postRepository->findOneBy(['id' => $id]);
             if ($post == null) {
                 return $this->json([
-                    'message' => 'Post not found.',
+                    'message' => 'Post introuvable.',
                 ], 404);
             }
 
             $this->entityManager->remove($post);
             $this->entityManager->flush();
             return $this->json([
-                'message' => 'Post deleted.',
+                'message' => 'Post supprimé.',
             ]);
         }
 
         return $this->json([
-            'message' => 'Method not allowed.',
+            'message' => 'Methode non autorisée.',
         ], 405);
     }
 }

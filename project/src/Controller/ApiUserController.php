@@ -45,19 +45,19 @@ class ApiUserController extends AbstractController
 
             if (empty($data)) {
                 return $this->json([
-                    'message' => 'No data provided.',
+                    'message' => 'Aucune donnée envoyée.',
                 ], 400);
             }
 
             if (!isset($data['email']) || !isset($data['name']) || !isset($data['role']) || !isset($data['username']) || !isset($data['password'])) {
                 return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
+                    'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
 
             if ($data['email'] == null || $data['name'] == null || $data['role'] == null || $data['username'] == null || $data['password'] == null) {
                 return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
+                    'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
 
@@ -65,31 +65,31 @@ class ApiUserController extends AbstractController
             $user = new User();
             if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 return $this->json([
-                    'message' => 'Email is invalid.',
+                    'message' => "Adresse e-mail invalide.",
                 ], 400);
             }
             if ($userRepository->findOneBy(['email' => $data['email']])) {
                 return $this->json([
-                    'message' => 'Email already used.',
+                    'message' => 'Adresse e-mail déjà utilisée.',
                 ], 400);
             }
             $user->setEmail($data['email']);
             $user->setName($data['name']);
             if ($userRepository->findOneBy(['username' => $data['username']])) {
                 return $this->json([
-                    'message' => 'Username already used.',
+                    'message' => "Nom d'utilisateur déjà utilisé.",
                 ], 400);
             }
             $user->setUsername($data['username']);
             if (!in_array($data['role'], ['ROLE_USER', 'ROLE_SCHOOL', 'ROLE_PARTNER', 'ROLE_ADMIN'])) {
                 return $this->json([
-                    'message' => 'Role is invalid.',
+                    'message' => 'Rôle invalide.',
                 ], 400);
             }
             $user->setRoles([$data['role']]);
             if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^', $data['password'])) {
                 return $this->json([
-                    'message' => 'Password does not respect the Security Policy.',
+                    'message' => "Le mot de passe n'est pas assez fort (doit contenir au moins une lettre majuscule, minuscule, un chiffre et un caractère spécial).",
                 ], 400);
             }
             $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['password']));
@@ -103,7 +103,7 @@ class ApiUserController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'Method not allowed.',
+            'message' => 'Methode non autorisée.',
         ], 405);
     }
 
@@ -115,14 +115,14 @@ class ApiUserController extends AbstractController
             $user = $userRepository->findOneBy(['id' => $id]);
             if ($user == null) {
                 return $this->json([
-                    'message' => 'User not found.',
+                    'message' => 'Utilisateur introuvable.',
                 ], 404);
             }
         } else {
             $user = $userRepository->findOneBy(['username' => $idOrUsername]);
             if ($user == null) {
                 return $this->json([
-                    'message' => 'User not found.',
+                    'message' => 'Utilisateur introuvable.',
                 ], 404);
             }
         }
@@ -142,19 +142,19 @@ class ApiUserController extends AbstractController
 
             if (empty($data)) {
                 return $this->json([
-                    'message' => 'No data provided.',
+                    'message' => 'Aucune donnée envoyée.',
                 ], 400);
             }
 
             if (isset($data['email']) && $data['email'] != null) {
                 if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                     return $this->json([
-                        'message' => 'Email is invalid.',
+                        'message' => "Adresse e-mail invalide.",
                     ], 400);
                 }
                 if ($userRepository->findOneBy(['email' => $data['email']])) {
                     return $this->json([
-                        'message' => 'Email already used.',
+                        'message' => "Adresse e-mail déjà utilisée.",
                     ], 400);
                 }
                 $user->setEmail($data['email']);
@@ -167,7 +167,7 @@ class ApiUserController extends AbstractController
             if (isset($data['username']) && $data['username'] != null) {
                 if ($userRepository->findOneBy(['username' => $data['username']])) {
                     return $this->json([
-                        'message' => 'Username already used.',
+                        'message' => "Nom d'utilisateur déjà utilisé.",
                     ], 400);
                 }
                 $user->setUsername($data['username']);
@@ -176,7 +176,7 @@ class ApiUserController extends AbstractController
             if (isset($data['role']) && $data['role'] != null) {
                 if (!in_array($data['role'], ['ROLE_USER', 'ROLE_SCHOOL', 'ROLE_PARTNER', 'ROLE_ADMIN'])) {
                     return $this->json([
-                        'message' => 'Role is invalid.',
+                        'message' => 'Rôle invalide.',
                     ], 400);
                 }
                 $user->setRoles([$data['role']]);
@@ -185,7 +185,7 @@ class ApiUserController extends AbstractController
             if (isset($data['password']) && $data['password'] != null) {
                 if (strlen($data['password']) < 8 || !preg_match('^(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[\W_]).*$^', $data['password'])) {
                     return $this->json([
-                        'message' => 'Password does not respect the Security Policy.',
+                        'message' => "Le mot de passe n'est pas assez fort (doit contenir au moins une lettre majuscule, minuscule, un chiffre et un caractère spécial).",
                     ], 400);
                 }
                 $user->setPassword($this->userPasswordHasher->hashPassword($user, $data['password']));
@@ -203,7 +203,7 @@ class ApiUserController extends AbstractController
                 $school = $this->entityManager->getRepository(School::class)->findOneBy(['id' => $data['school']]);
                 if ($school == null) {
                     return $this->json([
-                        'message' => 'School not found.',
+                        'message' => 'École introuvable.',
                     ], 404);
                 }
                 $user->setSchool($school);
@@ -224,12 +224,12 @@ class ApiUserController extends AbstractController
             $this->entityManager->remove($user);
             $this->entityManager->flush();
             return $this->json([
-                'message' => 'User deleted.',
+                'message' => 'Utilisateur supprimé.',
             ]);
         }
 
         return $this->json([
-            'message' => 'Method not allowed.',
+            'message' => 'Methode non autorisée.',
         ], 405);
     }
 
@@ -241,14 +241,14 @@ class ApiUserController extends AbstractController
             $user = $userRepository->findOneBy(['id' => $id]);
             if ($user == null) {
                 return $this->json([
-                    'message' => 'User not found.',
+                    'message' => 'Utilisateur introuvable.',
                 ], 404);
             }
         } else {
             $user = $userRepository->findOneBy(['username' => $idOrUsername]);
             if ($user == null) {
                 return $this->json([
-                    'message' => 'User not found.',
+                    'message' => 'Utilisateur introuvable.',
                 ], 404);
             }
         }

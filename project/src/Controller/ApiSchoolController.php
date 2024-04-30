@@ -44,19 +44,19 @@ class ApiSchoolController extends AbstractController
 
             if (empty($data)) {
                 return $this->json([
-                    'message' => 'No data provided.',
+                    'message' => 'Aucune donnée envoyée.',
                 ], 400);
             }
 
             if ($data['name'] == null) {
                 return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
+                    'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
 
             if ($schoolRepository->findOneBy(['name' => $data['name']])) {
                 return $this->json([
-                    'message' => 'School already exists.',
+                    'message' => 'École déjà existante.',
                 ], 400);
             }
 
@@ -75,7 +75,7 @@ class ApiSchoolController extends AbstractController
         }
 
         return $this->json([
-            'message' => 'Method not allowed.',
+            'message' => 'Methode non autorisée.',
         ], 405);
     }
 
@@ -87,7 +87,7 @@ class ApiSchoolController extends AbstractController
             $school = $schoolRepository->findOneBy(['id' => $id]);
             if ($school == null) {
                 return $this->json([
-                    'message' => 'School not found.',
+                    'message' => 'École introuvable.',
                 ], 404);
             }
 
@@ -104,7 +104,7 @@ class ApiSchoolController extends AbstractController
             $school = $schoolRepository->findOneBy(['id' => $id]);
             if ($school == null) {
                 return $this->json([
-                    'message' => 'School not found.',
+                    'message' => 'École introuvable.',
                 ], 404);
             }
 
@@ -112,19 +112,19 @@ class ApiSchoolController extends AbstractController
 
             if (empty($data)) {
                 return $this->json([
-                    'message' => 'No data provided.',
+                    'message' => 'Aucune donnée envoyée.',
                 ], 400);
             }
 
             if ($data['name'] == null) {
                 return $this->json([
-                    'message' => 'Some data is missing. Please refer to the documentation.',
+                    'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
 
             if ($schoolRepository->findOneBy(['name' => $data['name']])) {
                 return $this->json([
-                    'message' => 'School already exists.',
+                    'message' => 'École déjà existante.',
                 ], 400);
             }
 
@@ -142,19 +142,19 @@ class ApiSchoolController extends AbstractController
             $school = $schoolRepository->findOneBy(['id' => $id]);
             if ($school == null) {
                 return $this->json([
-                    'message' => 'School not found.',
+                    'message' => 'École introuvable.',
                 ], 404);
             }
 
             $this->entityManager->remove($school);
             $this->entityManager->flush();
             return $this->json([
-                'message' => 'School deleted.',
+                'message' => 'École supprimée.',
             ]);
         }
 
         return $this->json([
-            'message' => 'Method not allowed.',
+            'message' => 'Methode non autorisée.',
         ], 405);
     }
 
@@ -163,7 +163,7 @@ class ApiSchoolController extends AbstractController
         $school = $schoolRepository->findOneBy(['id' => $id]);
         if ($school == null) {
             return $this->json([
-                'message' => 'School not found.',
+                'message' => 'École introuvable.',
             ], 404);
         }
 
