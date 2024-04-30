@@ -26,10 +26,6 @@ class Post
     #[Groups(['user', 'post'])]
     private ?School $school = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    #[Groups(['user', 'post'])]
-    private ?array $locations = null;
-
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['user', 'post'])]
@@ -42,6 +38,10 @@ class Post
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true)]
     #[Groups(['post'])]
     private Collection $comments;
+
+    #[ORM\Column]
+    #[Groups(['user', 'post'])]
+    private ?int $location = null;
 
     public function __construct()
     {
@@ -73,18 +73,6 @@ class Post
     public function setSchool(?School $school): static
     {
         $this->school = $school;
-
-        return $this;
-    }
-
-    public function getLocations(): ?array
-    {
-        return $this->locations;
-    }
-
-    public function setLocations(?array $locations): static
-    {
-        $this->locations = $locations;
 
         return $this;
     }
@@ -139,6 +127,18 @@ class Post
                 $comment->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLocation(): ?int
+    {
+        return $this->location;
+    }
+
+    public function setLocation(int $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }
