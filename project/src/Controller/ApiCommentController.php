@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api', name: 'api')]
-class ApiPostsController extends AbstractController
+class ApiCommentController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
@@ -33,18 +33,9 @@ class ApiPostsController extends AbstractController
         $this->tokenStorageInterface = $tokenStorageInterface;
     }
 
-    #[Route('/posts', name: '_posts', methods: ['GET', 'POST'])]
+    #[Route('/comments', name: '_comments', methods: ['POST'])]
     public function posts(Request $request, PostRepository $postRepository): Response
     {
-        if ($request->getMethod() == 'GET') {
-            return $this->json(
-                $postRepository->findAll(),
-                200,
-                [],
-                ['groups' => 'post']
-            );
-        }
-
         if ($request->getMethod() == 'POST') {
             $data = json_decode($request->getContent(), true);
             $decodedJwtToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
@@ -69,6 +60,13 @@ class ApiPostsController extends AbstractController
                     'message' => 'Some data is missing. Please refer to the documentation.',
                 ], 400);
             }
+            if ($data['content'] == null || ($data['school'] == null && $data['locations'] == null)) {
+                return $this->json([
+                    'message' => 'Some data is missing. Please refer to the documentation.',
+                ], 400);
+            }
+
+
 
             $post = new Post();
             $post->setContent($data['content']);
@@ -92,7 +90,6 @@ class ApiPostsController extends AbstractController
                 $post->setLocations($data['locations']);
             }
             $post->setUser($user);
-            $user->setCreatedAt(new \DateTimeImmutable('now'));
 
             $this->entityManager->persist($post);
             $this->entityManager->flush();
@@ -148,22 +145,5 @@ class ApiPostsController extends AbstractController
         return $this->json([
             'message' => 'Method not allowed.',
         ], 405);
-    }
-
-    #[Route('/posts/{id}/comments', name: '_posts_id_posts', methods: ['GET'])]
-    public function posts_id_posts(Request $request, PostRepository $postRepository, int $id): Response {
-        $post = $postRepository->findOneBy(['id' => $id]);
-        if ($post == null) {
-            return $this->json([
-                'message' => 'Post not found.',
-            ], 404);
-        }
-
-        return $this->json(
-            $post->getComments(),
-            200,
-            [],
-            ['groups' => 'comments']
-        );
     }
 }
