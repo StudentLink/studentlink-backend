@@ -40,6 +40,7 @@ class Post
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true)]
+    #[Groups(['post'])]
     private Collection $comments;
 
     public function __construct()
