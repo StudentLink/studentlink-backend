@@ -49,7 +49,13 @@ class ApiUserController extends AbstractController
                 ], 400);
             }
 
-            if ($data['email'] == null || $data['displayname'] == null || $data['role'] == null || $data['username'] == null || $data['password'] == null) {
+            if (!isset($data['email']) || !isset($data['name']) || !isset($data['role']) || !isset($data['username']) || !isset($data['password'])) {
+                return $this->json([
+                    'message' => 'Some data is missing. Please refer to the documentation.',
+                ], 400);
+            }
+
+            if ($data['email'] == null || $data['name'] == null || $data['role'] == null || $data['username'] == null || $data['password'] == null) {
                 return $this->json([
                     'message' => 'Some data is missing. Please refer to the documentation.',
                 ], 400);
@@ -68,7 +74,7 @@ class ApiUserController extends AbstractController
                 ], 400);
             }
             $user->setEmail($data['email']);
-            $user->setName($data['displayname']);
+            $user->setName($data['name']);
             if ($userRepository->findOneBy(['username' => $data['username']])) {
                 return $this->json([
                     'message' => 'Username already used.',
@@ -154,8 +160,8 @@ class ApiUserController extends AbstractController
                 $user->setEmail($data['email']);
             }
 
-            if (isset($data['displayname']) && $data['displayname'] != null) {
-                $user->setName($data['displayname']);
+            if (isset($data['name']) && $data['name'] != null) {
+                $user->setName($data['name']);
             }
 
             if (isset($data['username']) && $data['username'] != null) {
