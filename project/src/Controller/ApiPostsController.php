@@ -92,7 +92,7 @@ class ApiPostsController extends AbstractController
                 $post->setLocations($data['locations']);
             }
             $post->setUser($user);
-            $user->setCreatedAt(new \DateTimeImmutable('now'));
+            $post->setCreatedAt(new \DateTimeImmutable('now'));
 
             $this->entityManager->persist($post);
             $this->entityManager->flush();
