@@ -89,6 +89,11 @@ class ApiPostsController extends AbstractController
                 }
             }
             if (isset($data['location']) && $data['location'] != null) {
+                if (!in_array($data['location'], $user->getLocations())) {
+                    return $this->json([
+                        'message' => "L'utilisateur ne follow pas cette localisation.",
+                    ], 400);
+                }
                 $post->setLocation($data['location']);
             }
             $post->setUser($user);
@@ -138,6 +143,21 @@ class ApiPostsController extends AbstractController
                 ], 404);
             }
 
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $user->getRoles())  && $user !== $post->getUser()) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour supprimer ce post.",
+                ], 403);
+            }
+
             $this->entityManager->remove($post);
             $this->entityManager->flush();
             return $this->json([
@@ -163,7 +183,7 @@ class ApiPostsController extends AbstractController
             $post->getComments(),
             200,
             [],
-            ['groups' => 'comments']
+            ['groups' => 'comment']
         );
     }
 }

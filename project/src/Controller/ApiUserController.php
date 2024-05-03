@@ -22,16 +22,39 @@ class ApiUserController extends AbstractController
     private UserPasswordHasherInterface $userPasswordHasher;
     private EntityManagerInterface $entityManager;
 
+    private JWTTokenManagerInterface $jwtManager;
+
+    private TokenStorageInterface $tokenStorageInterface;
+
     public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface)
     {
         $this->userPasswordHasher = $userPasswordHasher;
         $this->entityManager = $entityManager;
+
+        // For using JWT Tokens in controllers
+        $this->jwtManager = $jwtManager;
+        $this->tokenStorageInterface = $tokenStorageInterface;
     }
 
     #[Route('/users', name: '_users', methods: ['GET', 'POST'])]
     public function users(Request $request, UserRepository $userRepository, JWTTokenManagerInterface $JWTManager): Response
     {
         if ($request->getMethod() == 'GET') {
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour voir tous les utilisateurs.",
+                ], 403);
+            }
+
             return $this->json(
                 $userRepository->findAll(),
                 200,
@@ -137,6 +160,20 @@ class ApiUserController extends AbstractController
         }
 
         if ($request->getMethod() == 'PUT') {
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $userConnected = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($userConnected == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $userConnected->getRoles()) && $userConnected !== $user) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour modifier cet utilisateur.",
+                ], 403);
+            }
 
             $data = json_decode($request->getContent(), true);
 
@@ -221,6 +258,21 @@ class ApiUserController extends AbstractController
         }
 
         if ($request->getMethod() == 'DELETE') {
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $userConnected = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($userConnected == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $userConnected->getRoles()) && $userConnected !== $user) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour supprimer cet utilisateur.",
+                ], 403);
+            }
+
             $this->entityManager->remove($user);
             $this->entityManager->flush();
             return $this->json([

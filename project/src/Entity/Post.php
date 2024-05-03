@@ -15,24 +15,24 @@ class Post
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user', 'post'])]
+    #[Groups(['user', 'post', 'comment'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['user', 'post'])]
+    #[Groups(['user', 'post', 'comment'])]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
-    #[Groups(['user', 'post'])]
+    #[Groups(['user', 'post', 'comment'])]
     private ?School $school = null;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['user', 'post'])]
+    #[Groups(['user', 'post', 'comment'])]
     private ?User $user = null;
 
     #[ORM\Column]
-    #[Groups(['user', 'post'])]
+    #[Groups(['user', 'post', 'comment'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'post', orphanRemoval: true)]

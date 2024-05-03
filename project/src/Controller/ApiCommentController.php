@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\School;
 use App\Entity\User;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
@@ -33,9 +35,18 @@ class ApiCommentController extends AbstractController
         $this->tokenStorageInterface = $tokenStorageInterface;
     }
 
-    #[Route('/comments', name: '_comments', methods: ['POST'])]
-    public function posts(Request $request, PostRepository $postRepository): Response
+    #[Route('/comments', name: '_comments', methods: ['GET', 'POST'])]
+    public function posts(Request $request, CommentRepository $commentRepository, PostRepository $postRepository): Response
     {
+        if ($request->getMethod() == 'GET') {
+            return $this->json(
+                $commentRepository->findAll(),
+                200,
+                [],
+                ['groups' => 'comment']
+            );
+        }
+
         if ($request->getMethod() == 'POST') {
             $data = json_decode($request->getContent(), true);
             $decodedJwtToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
@@ -55,12 +66,12 @@ class ApiCommentController extends AbstractController
                 ], 400);
             }
 
-            if (!isset($data['content']) || (!isset($data['school']) && !isset($data['locations']))) {
+            if (!isset($data['content']) || !isset($data['post'])) {
                 return $this->json([
                     'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
             }
-            if ($data['content'] == null || ($data['school'] == null && $data['locations'] == null)) {
+            if ($data['content'] == null || $data['post'] == null) {
                 return $this->json([
                     'message' => 'De la donnée est manquante. Consultez la documentation.',
                 ], 400);
@@ -68,37 +79,28 @@ class ApiCommentController extends AbstractController
 
 
 
-            $post = new Post();
-            $post->setContent($data['content']);
-            if (isset($data['school']) && $data['school'] != null) {
-                $schoolRepository = $this->entityManager->getRepository(School::class);
-                $school = $schoolRepository->findOneBy(['id' => $data['school']]);
-                if ($school == null) {
-                    return $this->json([
-                        'message' => 'École introuvable.',
-                    ], 404);
-                }
-                $post->setSchool($school);
+            $comment = new Comment();
+            $comment->setContent($data['content']);
 
-                if ($user->getSchool() !== $school) {
-                    return $this->json([
-                        'message' => "L'école donnée n'est pas celle liée à l'utilisateur.",
-                    ], 400);
-                }
+            $post = $postRepository->findOneBy(['id' => $data['post']]);
+            if ($post == null) {
+                return $this->json([
+                    'message' => 'Post introuvable.',
+                ], 404);
             }
-            if (isset($data['locations']) && $data['locations'] != null) {
-                $post->setLocations($data['locations']);
-            }
-            $post->setUser($user);
+            $comment->setPost($post);
 
-            $this->entityManager->persist($post);
+            $comment->setUser($user);
+            $comment->setCreatedAt(new \DateTimeImmutable('now'));
+
+            $this->entityManager->persist($comment);
             $this->entityManager->flush();
 
             return $this->json(
-                $post,
+                $comment,
                 200,
                 [],
-                ['groups' => 'post']
+                ['groups' => 'comment']
             );
         }
 
@@ -107,38 +109,52 @@ class ApiCommentController extends AbstractController
         ], 405);
     }
 
-    #[Route('/posts/{id}', name: '_posts_id', methods: ['GET', 'DELETE'])]
-    public function posts_id(Request $request, PostRepository $postRepository, int $id): Response
+    #[Route('/comments/{id}', name: '_comments_id', methods: ['GET', 'DELETE'])]
+    public function comments_id(Request $request, CommentRepository $commentRepository, int $id): Response
     {
         if ($request->getMethod() == 'GET') {
-
-            $post = $postRepository->findOneBy(['id' => $id]);
-            if ($post == null) {
+            $comment = $commentRepository->findOneBy(['id' => $id]);
+            if ($comment == null) {
                 return $this->json([
-                    'message' => 'Post introuvable.',
+                    'message' => 'Commentaire introuvable.',
                 ], 404);
             }
 
             return $this->json(
-                $post,
+                $comment,
                 200,
                 [],
-                ['groups' => 'post']
+                ['groups' => 'comment']
             );
         }
 
         if ($request->getMethod() == 'DELETE') {
-            $post = $postRepository->findOneBy(['id' => $id]);
-            if ($post == null) {
+            $comment = $commentRepository->findOneBy(['id' => $id]);
+            if ($comment == null) {
                 return $this->json([
-                    'message' => 'Post introuvable.',
+                    'message' => 'Commentaire introuvable.',
                 ], 404);
             }
 
-            $this->entityManager->remove($post);
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $user->getRoles())  && $user !== $comment->getUser()) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour supprimer ce commentaire.",
+                ], 403);
+            }
+
+            $this->entityManager->remove($comment);
             $this->entityManager->flush();
             return $this->json([
-                'message' => 'Post supprimé.',
+                'message' => 'Commentaire supprimé.',
             ]);
         }
 

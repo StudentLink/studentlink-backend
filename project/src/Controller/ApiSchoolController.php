@@ -21,9 +21,17 @@ class ApiSchoolController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
+    private JWTTokenManagerInterface $jwtManager;
+
+    private TokenStorageInterface $tokenStorageInterface;
+
     public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface)
     {
         $this->entityManager = $entityManager;
+
+        // For using JWT Tokens in controllers
+        $this->jwtManager = $jwtManager;
+        $this->tokenStorageInterface = $tokenStorageInterface;
     }
 
 
@@ -40,6 +48,22 @@ class ApiSchoolController extends AbstractController
         }
 
         if ($request->getMethod() == 'POST') {
+
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour créer une école.",
+                ], 403);
+            }
+
             $data = json_decode($request->getContent(), true);
 
             if (empty($data)) {
@@ -108,6 +132,21 @@ class ApiSchoolController extends AbstractController
                 ], 404);
             }
 
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $user->getRoles())  && !(in_array('ROLE_SCHOOL', $user->getRoles()) && $user->getSchool() === $school)) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour modifier cette école.",
+                ], 403);
+            }
+
             $data = json_decode($request->getContent(), true);
 
             if (empty($data)) {
@@ -139,6 +178,21 @@ class ApiSchoolController extends AbstractController
         }
 
         if ($request->getMethod() == 'DELETE') {
+            $decodedToken = $this->jwtManager->decode($this->tokenStorageInterface->getToken());
+            $userRepository = $this->entityManager->getRepository(User::class);
+            $user = $userRepository->findOneBy(['id' => $decodedToken['sub']]);
+
+            if ($user == null) {
+                return $this->json([
+                    'message' => 'Utilisateur introuvable.',
+                ], 404);
+            }
+            if (!in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->json([
+                    'message' => "Vous n'avez pas les droits pour supprimer une école.",
+                ], 403);
+            }
+
             $school = $schoolRepository->findOneBy(['id' => $id]);
             if ($school == null) {
                 return $this->json([
