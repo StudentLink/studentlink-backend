@@ -39,7 +39,7 @@ class Post
     #[Groups(['post'])]
     private Collection $comments;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     #[Groups(['user', 'post'])]
     private ?int $location = null;
 
