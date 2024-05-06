@@ -1,0 +1,16 @@
+#heroPage {
+  background-color: var(--bgDark);
+  min-height: 50vh;
+  overflow: hidden;
+  color: white;
+
+  .heroPage-container {
+    margin-top: 25vh;
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+  }
+}

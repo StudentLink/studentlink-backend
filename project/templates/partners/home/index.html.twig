@@ -7,11 +7,48 @@
         <div class="heroHome-container">
             <h1>Communiquez<br/>aux étudiants.</h1>
             <p>Découvre StudentLink, le réseau social étudiant !<br/></p>
-            <a href="https://studentlink-frontend-web.vercel.app/" class="btn">Ouvrir StudentLink</a>
+            <a href="https://studentlink-frontend-web.vercel.app/" class="btn">Devenir partenaire</a>
         </div>
         <img class="globe" src="{{ asset('img/globe.png') }}" alt="globe">
     </section>
 {% endblock %}
 
 {% block body %}
+    <section id="discover">
+        <div class="discoverContainer">
+            <h2>Découvrez StudentLink !</h2>
+            <p>StudentLink est un réseau social qui permet aux étudiants de créer des liens et de participer à des évènements dans leur ville !</p>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <img class="img-card noselect" alt="Amuse toi avec tes amis - StudentLink" src="{{ asset('img/discover/discover01.jpg') }}">
+                <h3 class="text-center">Communications directe auprès d'étudiants par secteurs</h3>
+            </div>
+            <div class="card">
+                <img class="img-card noselect" alt="Participe aux évènements de nos partenaires - StudentLink" src="{{ asset('img/discover/discover02.jpg') }}">
+                <h3 class="text-center">Faites connaître votre établissement aux jeunes</h3>
+            </div>
+            <div class="card">
+                <img class="img-card noselect" alt="Rejoins notre communauté - StudentLink" src="{{ asset('img/discover/discover03.jpg') }}">
+                <h3 class="text-center">Une large communauté de partenaires et d'étudiants</h3>
+            </div>
+        </div>
+    </section>
+
+    <section id="downloads">
+        <div class="downloadsContainer">
+            <h2>Devenons partenaires !</h2>
+            <p>StudentLink est un réseau social dédié aux étudiants !<br />Devenons partenaires et touchez un nouveau public.</p>
+            <h3>Découverte de la plateforme ?</h3>
+            <div class="downloadButtons">
+                <a href="https://calendly.com/" class="btn">Prendre rendez-vous</a>
+            </div>
+            <h3>Vous êtes déjà inscrits ?</h3>
+            <a href="https://studentlink-frontend-web.vercel.app/" class="btn">Ouvrir StudentLink</a>
+        </div>
+        <div class="downloadImage">
+            <img class="noselect" src="{{ asset('img/mockup.png') }}" alt="Télécharge StudentLink">
+        </div>
+    </section>
 {% endblock %}

@@ -27,9 +27,9 @@
                 <img src="{{ asset('img/logo.png') }}" alt="StudentLink - Logo"/>
             </a>
             <nav>
-                <a href="{{ path('vitrine_users_home') }}">Accueil</a>
-                <a href="/">Découvrir</a>
-                <a href="">Assistance</a>
+                <a href="{{ path('vitrine_users_home') }}" class="active">Étudiants</a>
+                <a href="{{ path('vitrine_schools_home') }}">Écoles</a>
+                <a href="{{ path('vitrine_partners_home') }}">Entreprises</a>
             </nav>
             <nav class="importantNav">
                 <a href="https://studentlink-frontend-web.vercel.app/">Ouvrir StudentLink</a>
@@ -37,38 +37,18 @@
 
         </header>
         <main>
-            {% block hero %}{% endblock %}
+            {% block hero %}
+                <section id="heroPage">
+                    <div class="heroPage-container">
+                        <h1>{{ pageH1 }}</h1>
+                    </div>
+                </section>
+            {% endblock %}
             {% block body %}{% endblock %}
         </main>
         <footer>
             {% block footer %}
-                <div class="footerLinks">
-                    <div class="leftMedias">
-                        <img src="{{ asset('img/logo.png') }}" alt="StudentLink - Logo"/>
-                        <h2>StudentLink</h2>
-                        <p>StudentLink, c'est le réseau social pour étudiants, crée par des étudiants !</p>
-                    </div>
-                    <div class="rightLinks">
-                        <div>
-                            <h3>Étudiants</h3>
-                            <a href="{{ path('vitrine_users_home') }}">Accueil</a>
-                            <a href="/">Découvrir</a>
-                            <a href="/">Assistance</a>
-                        </div>
-                        <div>
-                            <h3>Entreprises</h3>
-                            <a href="{{ path('vitrine_partners_home') }}">Accueil</a>
-                            <a href="/">Découvrir</a>
-                            <a href="/">Assistance</a>
-                        </div>
-                        <div>
-                            <h3>Écoles</h3>
-                            <a href="{{ path('vitrine_schools_home') }}">Accueil</a>
-                            <a href="/">Découvrir</a>
-                            <a href="/">Assistance</a>
-                        </div>
-                    </div>
-                </div>
+                <p>© StudentLink - Made in Bordeaux - 2024</p>
             {% endblock %}
         </footer>
 

@@ -20,30 +20,17 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/about', name: 'vitrine_users_about')]
+    #[Route('/decouvrir', name: 'vitrine_users_discover')]
     public function users_about(): Response
     {
-        return $this->render('home/about.html.twig');
+        return $this->render('users/discover/index.html.twig', [
+            'pageH1' => "Découvrir"
+        ]);
     }
 
     #[Route('/contact', name: 'vitrine_users_contact')]
     public function users_contact(): Response
     {
         return $this->render('home/contact.html.twig');
-    }
-
-
-
-    #[Route('/ecoles', name: 'vitrine_schools_home')]
-    public function schools_home(): Response
-    {
-        return $this->render('schools/home/index.html.twig');
-    }
-
-
-    #[Route('/entreprises', name: 'vitrine_partners_home')]
-    public function partners_home(): Response
-    {
-        return $this->render('partners/home/index.html.twig');
     }
 }
