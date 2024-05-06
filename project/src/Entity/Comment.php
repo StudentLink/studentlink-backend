@@ -31,7 +31,7 @@ class Comment
     private ?Post $post = null;
 
     #[ORM\Column]
-    #[Groups(['comment'])]
+    #[Groups(['post', 'comment'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
